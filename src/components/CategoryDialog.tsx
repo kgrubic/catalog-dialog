@@ -14,13 +14,15 @@ function CategoryDialog(dialog: {
   >([]);
   const [searchFilter, setSearchFilter] = useState<string>("");
   const { data } = useQuery(GET_DIALOG_CONFIG);
-  const { allActions, allColumns } = data || {};
+  const { allActions, allColumns, allTitles, allPrompts } = data || {};
   const { add, cancel, callback } = allActions?.[0] || "";
   const { column } = allColumns?.[0] || 2;
+  const { title } = allTitles?.[0] || "";
+  const { prompt } = allPrompts?.[0] || "";
 
   return (
     <div className={`dialog-size-${column}`}>
-      <Header setSearchFilter={setSearchFilter} />
+      <Header setSearchFilter={setSearchFilter} title={title} />
       <Content
         selectedCategoryItems={selectedCategoryItems}
         setSelectedCategoryItems={setSelectedCategoryItems}
@@ -34,6 +36,7 @@ function CategoryDialog(dialog: {
         selectedCategoryItems={selectedCategoryItems}
         disabledAdd={selectedCategoryItems.length === 0}
         setIsDialogOpen={dialog.setIsDialogOpen}
+        prompt={prompt}
       />
     </div>
   );

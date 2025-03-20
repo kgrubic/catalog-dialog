@@ -7,6 +7,7 @@ function CategoryItemCard(
     >;
     selectedCategoryItems: CategoryItem[];
     column: number;
+    ref?: (node: HTMLDivElement | null) => void;
   }
 ) {
   const handleSelect = (category: CategoryItem) => {
@@ -22,6 +23,7 @@ function CategoryItemCard(
 
   return (
     <div
+      ref={item.ref}
       className={`flex ${
         selected ? "bg-cyan-500" : ""
       } items-center h-[90px] border border-solid border-white hover:border hover:border-gray-400`}

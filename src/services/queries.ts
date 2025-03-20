@@ -33,5 +33,14 @@ export const GET_DIALOG_CONFIG = gql`
       callback
       cancel
     }
+    allTitles {
+      title
+    }
+    allTitles {
+      title
+    }
+    allPrompts {
+      prompt
+    }
   }
 `;

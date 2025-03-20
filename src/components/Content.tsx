@@ -3,7 +3,7 @@ import CategoryItemCard from "./CategoryItemCard";
 import { GET_ALL_CATEGORY_ITEMS } from "../services/queries";
 import { Category, CategoryItem } from "../types/catalog";
 import CategoryFilter from "./CategoryFilter";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 function Content(content: {
   setSelectedCategoryItems: React.Dispatch<
@@ -15,19 +15,24 @@ function Content(content: {
 }) {
   const [selectedCategory, setSelectedCategory] = useState<string>("cat-0");
   const [filter, setFilter] = useState({});
+  const [page, setPage] = useState<number>(0);
+  const [perPage] = useState<number>(12);
   const [initialAllCategoryItems, setInitialAllCategoryItems] = useState<
     CategoryItem[]
   >([]);
 
-  const { data } = useQuery(GET_ALL_CATEGORY_ITEMS, {
+  const { data, loading } = useQuery(GET_ALL_CATEGORY_ITEMS, {
     variables: {
-      page: 0,
-      perPage: 10,
+      page: page,
+      perPage: perPage,
       filter: filter,
     },
   });
-  console.log("filter", filter);
   const { allCategoryItems, allCategories, allColumns } = data || [];
+
+  useEffect(() => {
+    console.log("allCategoryItems", allCategoryItems);
+  }, [allCategoryItems]);
 
   useEffect(() => {
     setFilter(() => ({
@@ -40,6 +45,26 @@ function Content(content: {
     if (selectedCategory === "cat-0")
       setInitialAllCategoryItems(allCategoryItems);
   }, [allCategoryItems, selectedCategory]);
+
+  const overflow =
+    allCategoryItems?.length > (content.column === 2 ? 6 : 4)
+      ? "overflow-y-auto"
+      : "";
+
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastItemElementRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (loading && allCategoryItems.length) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [loading, allCategoryItems]
+  );
 
   return (
     <div className="h-[450px] flex">
@@ -64,22 +89,42 @@ function Content(content: {
       </div>
       <div className={`${content.column === 2 ? "grow-7" : "grow-4"}`}>
         <div
-          className={`grid col-card-lay-${content.column} gap-4 max-h-[450px] overflow-y-auto`}
+          className={`grid col-card-lay-${content.column} gap-4 max-h-[450px] ${overflow}`}
         >
-          {allCategoryItems?.map((item: CategoryItem) => (
-            <CategoryItemCard
-              key={item.id}
-              name={item.name}
-              description={item.description}
-              icon={item.icon}
-              id={item.id}
-              tags={item.tags}
-              category={item.category}
-              column={content.column}
-              setSelectedCategoryItems={content.setSelectedCategoryItems}
-              selectedCategoryItems={content.selectedCategoryItems}
-            />
-          ))}
+          {allCategoryItems?.map((item: CategoryItem, index: number) => {
+            if (allCategoryItems.length === index + 1) {
+              return (
+                <CategoryItemCard
+                  key={item.id}
+                  name={item.name}
+                  description={item.description}
+                  icon={item.icon}
+                  id={item.id}
+                  ref={lastItemElementRef}
+                  tags={item.tags}
+                  category={item.category}
+                  column={content.column}
+                  setSelectedCategoryItems={content.setSelectedCategoryItems}
+                  selectedCategoryItems={content.selectedCategoryItems}
+                />
+              );
+            } else {
+              return (
+                <CategoryItemCard
+                  key={item.id}
+                  name={item.name}
+                  description={item.description}
+                  icon={item.icon}
+                  id={item.id}
+                  tags={item.tags}
+                  category={item.category}
+                  column={content.column}
+                  setSelectedCategoryItems={content.setSelectedCategoryItems}
+                  selectedCategoryItems={content.selectedCategoryItems}
+                />
+              );
+            }
+          })}
         </div>
       </div>
     </div>

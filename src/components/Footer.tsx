@@ -8,6 +8,7 @@ function Footer(item: {
   disabledAdd: boolean;
   selectedCategoryItems: CategoryItem[];
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  prompt: string;
 }) {
   const handleCallback = (value: CategoryItem[] | null) => {
     if (item.callback in functionMap) {
@@ -17,8 +18,9 @@ function Footer(item: {
   };
 
   return (
-    <div className="border-1 border-solid w-full h-24 p-4">
-      <div className="flex flex items-center justify-end gap-4">
+    <div className=" flex items-center border-1 justify-between border-solid w-full h-24 p-4">
+      <div className="">{item.prompt}</div>
+      <div className="flex items-center justify-end gap-4">
         <button
           className="btn-primary w-24"
           disabled={item.disabledAdd}

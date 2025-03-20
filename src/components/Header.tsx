@@ -3,7 +3,9 @@ import { debounce } from "lodash";
 
 function Header(item: {
   setSearchFilter: React.Dispatch<React.SetStateAction<string>>;
+  title: string;
 }) {
+  const { title } = item;
   const debouncedSearch = useMemo(
     () =>
       debounce((value) => {
@@ -15,7 +17,7 @@ function Header(item: {
   return (
     <>
       <div className="flex justify-between items-center border-1 border-solid w-full h-24">
-        <div className="left-0 m-4">Actions type</div>
+        <div className="left-0 m-4 text-2xl font-bold">{title}</div>
         <div className="border-1 border-solid w-96 h-[50px] right-0 m-4">
           <input
             className="w-96 h-[50px] placeholder:p-2"
