@@ -11,22 +11,30 @@ function Content(content: {
   >;
   selectedCategoryItems: CategoryItem[];
   column: number;
+  searchFilter: string;
 }) {
   const [selectedCategory, setSelectedCategory] = useState<string>("cat-0");
-
+  const [filter, setFilter] = useState({});
   const [initialAllCategoryItems, setInitialAllCategoryItems] = useState<
     CategoryItem[]
   >([]);
+
   const { data } = useQuery(GET_ALL_CATEGORY_ITEMS, {
     variables: {
       page: 0,
       perPage: 10,
-      filter:
-        selectedCategory !== "cat-0" ? { category: selectedCategory } : {},
+      filter: filter,
     },
   });
-
+  console.log("filter", filter);
   const { allCategoryItems, allCategories, allColumns } = data || [];
+
+  useEffect(() => {
+    setFilter(() => ({
+      ...(selectedCategory !== "cat-0" && { category: selectedCategory }),
+      ...(content.searchFilter && { name: content.searchFilter }),
+    }));
+  }, [content.searchFilter, selectedCategory]);
 
   useEffect(() => {
     if (selectedCategory === "cat-0")

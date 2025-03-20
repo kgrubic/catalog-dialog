@@ -17,6 +17,12 @@ export type Category = {
   name: string;
 };
 
+export type CategoryItemFilter = {
+  tags: TagId[];
+  description: string;
+  name: string;
+};
+
 // type Tag = {
 //   id: TagId;
 //   primary: string;

@@ -12,18 +12,20 @@ function CategoryDialog(dialog: {
   const [selectedCategoryItems, setSelectedCategoryItems] = useState<
     CategoryItem[]
   >([]);
+  const [searchFilter, setSearchFilter] = useState<string>("");
   const { data } = useQuery(GET_DIALOG_CONFIG);
   const { allActions, allColumns } = data || {};
   const { add, cancel, callback } = allActions?.[0] || "";
   const { column } = allColumns?.[0] || 2;
-  console.log("column", column);
+
   return (
     <div className={`dialog-size-${column}`}>
-      <Header />
+      <Header setSearchFilter={setSearchFilter} />
       <Content
         selectedCategoryItems={selectedCategoryItems}
         setSelectedCategoryItems={setSelectedCategoryItems}
         column={column}
+        searchFilter={searchFilter}
       />
       <Footer
         add={add}

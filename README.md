@@ -6,7 +6,7 @@ json-graphql-server https://github.com/marmelab/json-graphql-server
 
 To run this project
 
-`git checkout git@github.com:kgrubic/catalog-dialog.git`
+`git clone git@github.com:kgrubic/catalog-dialog.git`
 
 `cd catalog-dialog`
 
